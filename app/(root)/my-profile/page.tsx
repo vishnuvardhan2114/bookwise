@@ -7,7 +7,7 @@ import React from "react";
 const Page = () => {
   return (
     <>
-      <form
+      {/* <form
         action={async () => {
           "use server";
           await signOut();
@@ -15,7 +15,7 @@ const Page = () => {
         className="mb-10"
       >
         <Button>Logout</Button>
-      </form>
+      </form> */}
 
       <BookList
         title="Borrowed Books"

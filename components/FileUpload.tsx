@@ -59,7 +59,6 @@ const FileUpload = ({
   const [file, setFile] = useState<{ filePath: string | null }>({
     filePath: value ?? null,
   });
-  console.log(file);
 
   const [progress, setProgress] = useState(0);
 
