@@ -3,7 +3,7 @@ import Image from "next/image";
 import BookCover from "@/components/BookCover";
 import BorrowBook from "@/components/BorrowBook";
 import { db } from "@/database/drizzle";
-import { users } from "@/database/schema";
+import { borrowRecords, users } from "@/database/schema";
 import { eq } from "drizzle-orm";
 
 interface Props extends Book {
@@ -22,11 +22,23 @@ const BookOverview = async ({
   id,
   userId,
 }: Props) => {
+  let isBorrowed = false;
+  let dueDate;
   const [user] = await db
     .select()
     .from(users)
     .where(eq(users.id, userId))
     .limit(1);
+
+  const isBookAlreadyBorrowed = await db
+    .select()
+    .from(borrowRecords)
+    .where(eq(borrowRecords.bookId, id));
+
+  if (isBookAlreadyBorrowed.length > 0) {
+    isBorrowed = true;
+    dueDate = isBookAlreadyBorrowed && isBookAlreadyBorrowed[0].dueDate;
+  }
 
   const borrowingEligibility = {
     isEligible: availableCopies > 0 && user?.status === "APPROVED",
@@ -74,6 +86,8 @@ const BookOverview = async ({
             bookId={id}
             userId={userId}
             borrowingEligibility={borrowingEligibility}
+            isBorrowed={isBorrowed}
+            dueDate={dueDate}
           />
         )}
       </div>

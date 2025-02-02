@@ -1,18 +1,27 @@
+"use client";
+
 import { cn, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
-import { Button } from "./ui/button";
-import { signOut } from "@/auth";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Session } from "next-auth";
+import { LogOut } from "lucide-react";
+import { signOutAction } from "@/lib/actions/signOut";
 
-const Header = () => {
+const Header = ({ session }: { session: Session }) => {
+  const pathname = usePathname();
   return (
-    <header className="my-10 flex justify-between gap-5">
+    <header className="my-10 flex items-center justify-between gap-5">
       <Link href="/">
-        <Image src="/icons/logo.svg" alt="logo" width={40} height={40} />
+        <div className="flex flex-row items-center text-center">
+          <Image src="/icons/logo.svg" alt="logo" width={40} height={40} />
+          <p className="font-bold text-2xl text-white mx-2">BookWise</p>
+        </div>
       </Link>
       <ul className="flex flex-row items-center gap-8">
-        {/* <li>
+        <li>
           <Link
             href="/library"
             className={cn(
@@ -22,24 +31,20 @@ const Header = () => {
           >
             Library
           </Link>
-        </li> */}
+        </li>
         <li>
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
-            className="mb-10"
-          >
-            <Button>Logout</Button>
-          </form>
-          {/* <Link href="/my-profile">
+          <Link href="/my-profile">
             <Avatar>
               <AvatarFallback className="bg-amber-100">
                 {getInitials(session?.user?.name || "")}
               </AvatarFallback>
             </Avatar>
-          </Link> */}
+          </Link>
+        </li>
+        <li>
+          <form action={signOutAction}>
+            <LogOut className="text-red-600 cursor-pointer" />
+          </form>
         </li>
       </ul>
     </header>
